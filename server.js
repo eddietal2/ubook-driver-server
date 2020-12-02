@@ -4,7 +4,8 @@ const dotenv                  = require('dotenv');
 const mongoose                = require("mongoose");
 const cors                    = require('cors');
 
-const loginRoute           = require("./routes/login.route.js");
+const driversRoute              = require("./routes/drivers.route.js");
+const loginRoute              = require("./routes/login.route.js");
 const registerRoute           = require("./routes/register.route.js");
 
 // Configure Environment Variables
@@ -23,6 +24,7 @@ mongoose
 app.use(cors());
 app.use(express.json());
 
+app.use("/api/driver", driversRoute);
 app.use("/api/driver/login", loginRoute);
 app.use("/api/driver/register", registerRoute);
 
