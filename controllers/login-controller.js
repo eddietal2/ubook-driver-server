@@ -2,6 +2,13 @@ const Driver = require('../models/drivers.model');
 const jwt = require('jsonwebtoken');
 const config = require('../config/default.json');
 const bcrypt = require("bcrypt");
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require('twilio')(accountSid, authToken);
+
+console.log(accountSid);
+console.log(authToken);
+
 
 function createToken(driver) {
   return jwt.sign({ id: driver.id, email: driver.email }, config.jwtSecret, {
@@ -88,3 +95,69 @@ exports.forgotPassword = (req, res) => {
       }
       )
 };
+
+exports.sendCode = (req, res) => {
+  let type = req.body.type;
+  let value = req.body.value;
+
+  console.log(value);
+  
+
+  if (type === 'Phone') {
+    console.log('User is recieving code through SMS');
+    Driver.findOne(
+      {phone: value},
+      (err, driver) => {
+        if (err) return res.status(400).json(err)
+        if (!driver) {
+          console.log('No Driver with that Phone Number');
+          return res.status(400).json({msg: 'Driver with that phone number does not exist'})
+        }
+        if (driver) {
+          console.log('Found Driver with that Phone Number');
+          console.log(driver);
+        }
+      }
+    )
+    client.messages
+      .create({
+        body: 'Testing to see if Tracy gets this. Call me if you get this text baby.',
+        from: '+12312626285',
+        to: `+${value}`
+   })
+  .then(message => console.log(message.sid));
+  }
+  if (type === 'Email') {
+    console.log('User is recieving code through Email');
+    Driver.findOne(
+      {email: value},
+      (err, driver) => {
+        if (err) return res.status(400).json(err)
+        if (!driver) {
+          console.log('No Driver with that Email');
+          return res.status(400).json({msg: 'Driver with that email does not exist'})
+        }
+        if (driver) {
+          console.log('Found Driver with that Email');
+          console.log(driver);
+        }
+      }
+    )
+  }
+
+  let code;
+  function generateCode(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+
+    for ( let i = 0; i < length; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    console.log('Generated Code: ' + result);
+    return code = result;
+  }
+  generateCode(6);
+  console.log('Attemtping to send SMS');
+  
+}

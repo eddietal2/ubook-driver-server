@@ -4,12 +4,14 @@ const dotenv                  = require('dotenv');
 const mongoose                = require("mongoose");
 const cors                    = require('cors');
 
+// Configure Environment Variables
+dotenv.config();
+
 const driversRoute              = require("./routes/drivers.route.js");
 const loginRoute              = require("./routes/login.route.js");
 const registerRoute           = require("./routes/register.route.js");
 
-// Configure Environment Variables
-dotenv.config();
+
 console.log(process.env.DB_HOST_DEV)
 
 mongoose

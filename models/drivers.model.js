@@ -1,9 +1,16 @@
 const mongoose = require('mongoose');
+const bcrypt = require("bcrypt");
+const config = require('config');
+const jwt = require('jsonwebtoken');
 
 let DriversSchema = new mongoose.Schema({
   name: {
     type: String,
     maxlength: 250
+  },
+  phone: {
+    type: Number,
+    maxlength: 10
   },
   email: {
     type: String,
