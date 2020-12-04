@@ -44,6 +44,7 @@ DriversSchema.pre('save', function(next){
     })
   })
   })
+  
   DriversSchema.methods.comparePassword = function(candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
     console.log('Password: ' + candidatePassword);
