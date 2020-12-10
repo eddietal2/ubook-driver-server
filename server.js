@@ -1,15 +1,26 @@
-const express                 = require("express");
-const app                     = express();
-const dotenv                  = require('dotenv');
-const mongoose                = require("mongoose");
-const cors                    = require('cors');
+const express    = require("express");
+const app        = express();
+const dotenv     = require('dotenv');
+const mongoose   = require("mongoose");
+const cors       = require('cors');
+const https      = require("https")
+const fs         = require("fs");
+
+
+const options = {
+  key: fs.readFileSync('/Users/ferro/Desktop/ubook-master/ubook-driver-server/127.0.0.1-key.pem'),
+  cert: fs.readFileSync('/Users/ferro/Desktop/ubook-master/ubook-driver-server/127.0.0.1.pem')
+}
 
 // Configure Environment Variables
 dotenv.config();
 
-const driversRoute              = require("./routes/drivers.route.js");
-const loginRoute              = require("./routes/login.route.js");
-const registerRoute           = require("./routes/register.route.js");
+const carriersRoute              = require("./routes/carriers.route.js");
+const shippersRoute              = require("./routes/shippers.route.js");
+const carrierLoginRoute              = require("./routes/login-carrier.route.js");
+const shipperLoginRoute              = require("./routes/login-shipper.route.js");
+const carrierRegisterRoute           = require("./routes/register-carrier.route.js");
+const shipperRegisterRoute           = require("./routes/register-shipper.route.js");
 
 
 console.log(process.env.DB_HOST_DEV)
@@ -26,12 +37,18 @@ mongoose
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/driver", driversRoute);
-app.use("/api/driver/login", loginRoute);
-app.use("/api/driver/register", registerRoute);
+app.use("/api/carrier", carriersRoute);
+app.use("/api/carrier/login", carrierLoginRoute);
+app.use("/api/carrier/register", carrierRegisterRoute);
+
+app.use("/api/shipper", shippersRoute);
+app.use("/api/shipper/login", shipperLoginRoute);
+app.use("/api/shipper/register", shipperRegisterRoute);
 
 const port = process.env.PORT || 4000;
 server = app.listen(port, () => {
   console.log('Starting UBook Driver Server\n');
   console.log(`Listening on port ${port}...`)
 });
+
+https.createServer(options, app).listen(4040);

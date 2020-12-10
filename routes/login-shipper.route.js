@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const loginController  = require('../controllers/login-controller');
+const loginController  = require('../controllers/login-shipper-controller');
 
 router.post('/', loginController.login);
 router.post('/change-password', loginController.changePassword);
-router.post('/forgot-password-send-code', loginController.sendCode);
+router.post('/forgot-password-send-code', loginController.sendSMSCode);
 
 // router.get('/', loginController.loginGoogle);
 // router.get('/', loginController.loginFacebook);

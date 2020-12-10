@@ -1,40 +1,44 @@
-const Driver = require('../models/drivers.model');
+const Shipper = require('../models/shippers.model');
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 const nodemailer = require('nodemailer');
 
 exports.register = (req, res) => {
-  console.log('Driver Registering ...');
-  let name = req.body.name;
-  let email = req.body.email;
-  let phone = req.body.phone;
-  let password = req.body.password;
-
-  Driver.findOne({ email: req.body.email },
-    (err, driver) => {
+  console.log('Registering ...');
+  Shipper.findOne({ email: req.body.email },
+    (err, shipper) => {
       if(err) return res.status(400).json(err);
-      if(driver) return res.status(400).json({msg: 'There is already a Driver registered with that email'})
-      if(!driver) {
-        let driver = {
-          name: name,
-          email: email,
-          phone: phone,
-          password: password
+      if(shipper) return res.status(400).json({msg: 'There is already a Shipper registered with that email'})
+      if(!shipper) {
+        let shipper = {
+          name: req.body.name,
+          title: req.body.title,
+          email: req.body.email,
+          usertype: req.body.usertype,
+          city: req.body.city,
+          state: req.body.state,
+          zip: req.body.zip,
+          addressOne: req.body.addressOne,
+          addressTwo: req.body.addressTwo,
+          profilePicture: req.body.profilePicture,
+          rating: req.body.rating,
+          description: req.body.description,
+          password: req.body.password
         }
 
-        let newDriver = Driver(driver);
+        let newShipper = Shipper(shipper);
 
-        newDriver.save((err, driver) => {
+        newShipper.save((err, shipper) => {
           if (err) return err;
-          if (!driver) {
-            console.log('There was no driver saved');
-            return res.status(200).json(driver);
+          if (!shipper) {
+            console.log('There was no shipper saved');
+            return res.status(200).json(shipper);
           };
-          if (driver) {
-            console.log('Registered driver\n');
-            console.log(driver);
-            return res.status(200).json(driver);
+          if (shipper) {
+            console.log('Registered shipper\n');
+            console.log(shipper);
+            return res.status(200).json(shipper);
           }
         });
       }
@@ -45,16 +49,20 @@ exports.checkEmailAndPhone = (req, res) => {
   let email = req.body.email;
   let phone = req.body.phone;
 
-  Driver.findOne({ phone: phone },
-    (err, driver) => {
+  console.log(email);
+  console.log(phone);
+  
+
+  Shipper.findOne({ phone: phone },
+    (err, shipper) => {
       if(err) return res.status(400).json(err);
-      if(driver) return res.status(400).json({msg: 'There is already a Driver registered with that Phone Number'})
-      if(!driver) {
-        Driver.findOne({ email: email },
-          (err, driver) => {
+      if(shipper) return res.status(400).json({msg: 'There is already a Shipper registered with that Phone Number'})
+      if(!shipper) {
+        Shipper.findOne({ email: email },
+          (err, shipper) => {
             if(err) return res.status(400).json(err);
-            if(driver) return res.status(400).json({msg: 'There is already a Driver registered with the Email Address'})
-            if(!driver) {
+            if(shipper) return res.status(400).json({msg: 'There is already a Shipper registered with the Email Address'})
+            if(!shipper) {
               return res.status(200).json({msg: 'This user is qualified to register.'})
             }
         });
@@ -92,7 +100,6 @@ exports.sendSMSCode = (req, res) => {
   }
 }
 exports.sendEmailCode = (req, res) => {
-  
   let email = req.body.email;
   let code = req.body.code;
   console.log(`Sending code to ${email}`);
