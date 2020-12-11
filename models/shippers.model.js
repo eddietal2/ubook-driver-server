@@ -16,6 +16,10 @@ let ShippersSchema = new mongoose.Schema({
     type: String,
     maxlength: 7
   },
+  phone: {
+    type: String,
+    maxlength: 11
+  },
   email: {
     type: String,
     maxlength: 100
