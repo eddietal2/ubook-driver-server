@@ -6,12 +6,6 @@ const cors       = require('cors');
 const https      = require("https")
 const fs         = require("fs");
 
-
-const options = {
-  key: fs.readFileSync('/Users/ferro/Desktop/ubook-master/ubook-driver-server/127.0.0.1-key.pem'),
-  cert: fs.readFileSync('/Users/ferro/Desktop/ubook-master/ubook-driver-server/127.0.0.1.pem')
-}
-
 // Configure Environment Variables
 dotenv.config();
 
@@ -51,4 +45,14 @@ server = app.listen(port, () => {
   console.log(`Listening on port ${port}...`)
 });
 
-https.createServer(options, app).listen(4040);
+const httpsOptions = {
+  key: fs.readFileSync('/Users/ferro/Desktop/ubook-master/ubook-driver-server/10.0.1.4-key.pem'),
+  cert: fs.readFileSync('/Users/ferro/Desktop/ubook-master/ubook-driver-server/10.0.1.4.pem')
+}
+
+const httpsPort = 4040;
+
+https.createServer(httpsOptions, app).listen(httpsPort, () => {
+  console.log(`HTTPS Server @ ${httpsPort}`);
+}
+);
