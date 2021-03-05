@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const driversController  = require('../controllers/carriers-controller');
+const driversController  = require('../../controllers/carriers/carriers-controller');
 
 // router.get('/', driversController.getAllCarriers);
 router.post('/get-carrier', driversController.getCarrier);

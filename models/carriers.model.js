@@ -4,65 +4,85 @@ const config = require('config');
 const jwt = require('jsonwebtoken');
 
 let CarriersSchema = new mongoose.Schema({
-  name: {
+  firstName: {
     type: String,
-    maxlength: 250
+  },
+  lastName: {
+    type: String,
+  },
+  email: {
+    type: String,
   },
   phone: {
     type: String,
     maxlength: 11
   },
-  description: {
+  preferredContactNumber: {
     type: String,
-    maxlength: 300
-  },
-  email: {
-    type: String,
-    maxlength: 100
+    maxlength: 11
   },
   rating: {
     type: Number,
     default: 0
   },
-  addressOne: {
-    type: String,
-    maxlength: 100
+  ownerOperator: {
+    type: Boolean,
   },
-  addressTwo: {
+  mc: {
     type: String,
-    maxlength: 100
   },
-  zip: {
+  ein: {
     type: String,
-    maxlength: 100
   },
-  city: {
+  dot: {
     type: String,
-    maxlength: 100
   },
-  state: {
+  businessName: {
     type: String,
-    maxlength: 100
   },
-  usertype: {
+  businessAddressOne: {
     type: String,
-    maxlength: 20
   },
-  liscensePicture: {
+  businessAddressTwo: {
     type: String,
-    maxlength: 200
   },
-  liscenseNumber: {
+  businessCity: {
     type: String,
-    maxlength: 200
+  },
+  businessState: {
+    type: String,
+  },
+  businessZip: {
+    type: String,
+  },
+  businessLogo: {
+    type: String,
+  },
+  driverLicenseNumber: {
+    type: String,
+  },
+  driverLicenseState: {
+    type: String,
+  },
+  driverLicenseFrontPhoto: {
+    type: String,
+  },
+  driverLicenseBackPhoto: {
+    type: String,
+  },
+  stripeToken: {
+    type: Object,
   },
   insurance: {
     type: String,
     maxlength: 200
   },
+  insurancePolicyNumber: {
+    type: String,
+    maxlength: 200
+  },
   password: {
     type: String,
-    minlength: 7
   }
 })
 

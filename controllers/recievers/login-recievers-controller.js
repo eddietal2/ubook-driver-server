@@ -1,13 +1,13 @@
-const Shipper = require('../models/shippers.model');
+const reciever = require('../../models/recievers.model');
 const jwt = require('jsonwebtoken');
-const config = require('../config/default.json');
+const config = require('../../config/default.json');
 const bcrypt = require("bcrypt");
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 
-function createToken(shipper) {
-  return jwt.sign({ id: shipper.id, email: shipper.email, usertype: shipper.usertype, name: shipper.name, rating: shipper.rating, title: shipper.title}, config.jwtSecret, {
+function createToken(reciever) {
+  return jwt.sign({ id: reciever.id, email: reciever.email, usertype: reciever.usertype, name: reciever.name, rating: reciever.rating, title: reciever.title}, config.jwtSecret, {
       expiresIn: 200 // 86400 expires in 24 hours
     });
 }
@@ -23,23 +23,23 @@ exports.login = (req, res) => {
 
   console.log(`Attemping to log in as ${email}`);
 
-  Shipper.findOne({ email: email }, (err, shipper) => {
+  Reciever.findOne({ email: email }, (err, reciever) => {
       if (err) {
           return res.status(400).send({ msg: err });
       }
 
-      if (!shipper) {
-          return res.status(400).json({ msg: 'The Shipper does not exist' });
+      if (!reciever) {
+          return res.status(400).json({ msg: 'The reciever does not exist' });
       }
 
-      shipper.comparePassword(password, (err, isMatch) => {
+      reciever.comparePassword(password, (err, isMatch) => {
           if (isMatch && !err) {
-              console.log('Logged in as: ' + shipper.email);
+              console.log('Logged in as: ' + reciever.email);
               res.status(200).json({
-                  token: createToken(shipper)
+                  token: createToken(reciever)
               });
           } else {
-              return res.status(400).json({ msg: 'The email and password don\'t match.' });
+              return res.status(400).json({ msg: 'The passwords don\'t match.' });
           }
       });
   });
@@ -50,15 +50,15 @@ exports.changePassword = (req, res) => {
   let phone = req.body.phone
   let newPassword = req.body.password
 
-  Shipper.findOne(
+  reciever.findOne(
       {phone: phone},
-      (err, shipper) => {
+      (err, reciever) => {
         if (err) return res.status(400).json(err)
-        if (!shipper) return res.status(400).json({msg: 'There was no Shipper with that Phone'})
-        if (shipper) {
-          console.log('Current Password' + shipper.password);
+        if (!reciever) return res.status(400).json({msg: 'There was no reciever with that Phone'})
+        if (reciever) {
+          console.log('Current Password' + reciever.password);
 
-          shipper.comparePassword(newPassword, (err, isMatch) => {
+          reciever.comparePassword(newPassword, (err, isMatch) => {
             console.log(isMatch);
             if(isMatch) {
               return res.status(401).json({msg: 'Please enter a password that you have not used before.'})
@@ -76,7 +76,7 @@ exports.changePassword = (req, res) => {
                     let filter = { phone: phone };
                     let update = { password: newPassword }
 
-                    Shipper.updateOne(filter, update)
+                    reciever.updateOne(filter, update)
                     .then( data => {
                       console.log('Updated Password: ' + JSON.stringify(data));
                       return res.status(200).json({msg: 'Password Changed'});
@@ -103,18 +103,18 @@ exports.sendSMSCode = (req, res) => {
   if (!phone) {
     return res.status(400).json({msg: 'There was no phone number in the request'});
   } else {
-      Shipper.findOne(
+      reciever.findOne(
         {phone: phone},
-        (err, shipper) => {
+        (err, reciever) => {
           if (err) {
             return res.status(400).json(err);
           }
-          if (!shipper) {
-            return res.status(400).json({msg: 'There was no Shipper with that Phone Number'});
+          if (!reciever) {
+            return res.status(400).json({msg: 'There was no reciever with that Phone Number'});
           }
-          if (shipper) {
+          if (reciever) {
             generateCode(6);
-            console.log('Attemtping to send SMS to Shipper');
+            console.log('Attemtping to send SMS to reciever');
             console.log(phone);
             client.messages.create({
               body: code,

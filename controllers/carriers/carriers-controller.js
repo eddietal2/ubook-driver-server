@@ -1,4 +1,4 @@
-const Carrier = require('../models/carriers.model');
+const Carrier = require('../../models/carriers.model');
 
 // exports.getAllCarrier = (req, res) => {
 //   console.log('Getting all Carriers ...');

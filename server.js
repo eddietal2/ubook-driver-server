@@ -9,12 +9,15 @@ const fs         = require("fs");
 // Configure Environment Variables
 dotenv.config();
 
-const carriersRoute              = require("./routes/carriers.route.js");
-const shippersRoute              = require("./routes/shippers.route.js");
-const carrierLoginRoute              = require("./routes/login-carrier.route.js");
-const shipperLoginRoute              = require("./routes/login-shipper.route.js");
-const carrierRegisterRoute           = require("./routes/register-carrier.route.js");
-const shipperRegisterRoute           = require("./routes/register-shipper.route.js");
+const carriersRoute              = require("./routes/carriers/carriers.route.js");
+const carrierLoginRoute              = require("./routes/carriers/login-carrier.route.js");
+const carrierRegisterRoute           = require("./routes/carriers/register-carrier.route.js");
+const shippersRoute              = require("./routes/shippers/shippers.route.js");
+const shipperLoginRoute              = require("./routes/shippers/login-shipper.route.js");
+const shipperRegisterRoute           = require("./routes/shippers/register-shipper.route.js");
+const recieversRoute              = require("./routes/recievers/recievers.route.js");
+const recieverLoginRoute              = require("./routes/recievers/login-reciever.route.js");
+const recieverRegisterRoute           = require("./routes/recievers/register-reciever.route.js");
 
 
 console.log(process.env.DB_HOST_DEV)
@@ -39,20 +42,13 @@ app.use("/api/shipper", shippersRoute);
 app.use("/api/shipper/login", shipperLoginRoute);
 app.use("/api/shipper/register", shipperRegisterRoute);
 
+app.use("/api/reciever", recieversRoute);
+app.use("/api/reciever/login", recieverLoginRoute);
+app.use("/api/reciever/register", recieverRegisterRoute);
+
 const port = process.env.PORT || 4000;
 server = app.listen(port, () => {
   console.log('Starting UBook Driver Server\n');
   console.log(`Listening on port ${port}...`)
 });
 
-const httpsOptions = {
-  key: fs.readFileSync('/Users/ferro/Desktop/ubook-master/ubook-driver-server/10.0.1.4-key.pem'),
-  cert: fs.readFileSync('/Users/ferro/Desktop/ubook-master/ubook-driver-server/10.0.1.4.pem')
-}
-
-const httpsPort = 4040;
-
-https.createServer(httpsOptions, app).listen(httpsPort, () => {
-  console.log(`HTTPS Server @ ${httpsPort}`);
-}
-);

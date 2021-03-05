@@ -1,44 +1,53 @@
-const Shipper = require('../models/shippers.model');
+const Reciever = require('../../models/recievers.model');
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
 const nodemailer = require('nodemailer');
 
 exports.register = (req, res) => {
-  console.log('Registering ...');
-  Shipper.findOne({ email: req.body.email },
-    (err, shipper) => {
+  console.log('Registering Reciever ...');
+  console.log(req.body);
+  
+  Reciever.findOne({ email: req.body.email },
+    (err, reciever) => {
       if(err) return res.status(400).json(err);
-      if(shipper) return res.status(400).json({msg: 'There is already a Shipper registered with that email'})
-      if(!shipper) {
-        let shipper = {
-          name: req.body.name,
-          title: req.body.title,
-          email: req.body.email,
+      if(reciever) return res.status(400).json({msg: 'There is already a Reciever registered with that email'})
+      if(!reciever) {
+
+        let reciever = {
           usertype: req.body.usertype,
-          city: req.body.city,
-          state: req.body.state,
-          zip: req.body.zip,
-          addressOne: req.body.addressOne,
-          addressTwo: req.body.addressTwo,
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          email: req.body.email,
+          phone: req.body.phone,
           profilePicture: req.body.profilePicture,
-          rating: req.body.rating,
-          description: req.body.description,
+          businessName: req.body.businessName,
+          businessAddressOne: req.body.businessAddressOne,
+          businessAddressTwo: req.body.businessAddressTwo,
+          businessCity: req.body.businessCity,
+          businessState: req.body.businessState,
+          businessZip: req.body.businessZip,
+          businessPhone: req.body.businessPhone,
+          businessLogo: req.body.businessLogo,
+          stripeToken: req.body.stripeToken,
           password: req.body.password
         }
 
-        let newShipper = Shipper(shipper);
+        console.log(reciever);
+        
 
-        newShipper.save((err, shipper) => {
+        let newReciever = Reciever(reciever);
+
+        newReciever.save((err, reciever) => {
           if (err) return err;
-          if (!shipper) {
-            console.log('There was no shipper saved');
-            return res.status(200).json(shipper);
+          if (!reciever) {
+            console.log('There was no Reciever saved');
+            return res.status(200).json(reciever);
           };
-          if (shipper) {
-            console.log('Registered shipper\n');
-            console.log(shipper);
-            return res.status(200).json(shipper);
+          if (reciever) {
+            console.log('Registered Reciever\n');
+            console.log(reciever);
+            return res.status(200).json(reciever);
           }
         });
       }
@@ -53,23 +62,25 @@ exports.checkEmailAndPhone = (req, res) => {
   console.log(phone);
   
 
-  Shipper.findOne({ phone: phone },
-    (err, shipper) => {
+  Reciever.findOne({ phone: phone },
+    (err, reciever) => {
       if(err) return res.status(400).json(err);
-      if(shipper) return res.status(400).json({msg: 'There is already a Shipper registered with that Phone Number'})
-      if(!shipper) {
-        Shipper.findOne({ email: email },
-          (err, shipper) => {
+      if(Reciever) return res.status(400).json({msg: 'There is already a Reciever registered with that Phone Number'})
+      if(!reciever) {
+        Reciever.findOne({ email: email },
+          (err, reciever) => {
             if(err) return res.status(400).json(err);
-            if(shipper) return res.status(400).json({msg: 'There is already a Shipper registered with the Email Address'})
-            if(!shipper) {
+            if(reciever) return res.status(400).json({msg: 'There is already a Reciever registered with the Email Address'})
+            if(!reciever) {
               return res.status(200).json({msg: 'This user is qualified to register.'})
             }
         });
       }
   });
 }
-exports.sendSMSCode = (req, res) => {
+exports.sendSMSCodeReciever = (req, res) => {
+  console.log('');
+  
   let phone = req.body.phone;
   let code;
 

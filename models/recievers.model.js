@@ -3,10 +3,10 @@ const bcrypt = require("bcrypt");
 const config = require('config');
 const jwt = require('jsonwebtoken');
 
-let ShippersSchema = new mongoose.Schema({
+let RecieversSchema = new mongoose.Schema({
   usertype: {
     type: String,
-    maxlength: 20
+    maxlength: 20,
   },
   rating: {
     type: Number,
@@ -86,31 +86,31 @@ let ShippersSchema = new mongoose.Schema({
   },
 })
 
-// Called before save method on the shipper model
-// Turns shipper entered password into a hash value, with salt
-ShippersSchema.pre('save', function(next){
+// Called before save method on the Reciever model
+// Turns Reciever entered password into a hash value, with salt
+RecieversSchema.pre('save', function(next){
   // had to use a regular function ^ to get the correct scope of 'this'.
-  var shipper = this;
-  if (!shipper.isModified('password')) return next();
+  var reciever = this;
+  if (!reciever.isModified('password')) return next();
 
   bcrypt.genSalt(10, (err, salt) => {
     if (err) return next(err);
 
-    bcrypt.hash(shipper.password, salt, (err, hash) => {
+    bcrypt.hash(reciever.password, salt, (err, hash) => {
       if (err) return next(err);
       if(hash) {
-        shipper.password = hash;
-        this.password = shipper.password;
+        reciever.password = hash;
+        this.password = reciever.password;
         console.log('Password Hashed');
-        console.log(shipper.password);
+        console.log(reciever.password);
         return next();
       }
     })
   })
   })
-ShippersSchema.methods.comparePassword = function(candidatePassword, cb) {
+RecieversSchema.methods.comparePassword = function(candidatePassword, cb) {
   bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
-    console.log('Password: ' + candidatePassword);
+    console.log('Candidate Password: ' + candidatePassword);
     console.log('Hashed Password: ' + this.password);
     console.log('Passwords Match: ' + isMatch);
     if (err) return cb(err);
@@ -118,9 +118,9 @@ ShippersSchema.methods.comparePassword = function(candidatePassword, cb) {
   })
 }
 //custom method to generate authToken
-ShippersSchema.methods.generateAuthToken = function() {
+RecieversSchema.methods.generateAuthToken = function() {
   const token = jwt.sign({ _id: this._id }, config.get('myprivatekey')); //get the private key from the config file -> environment variable
   return token;
 }
 
-module.exports = Shipper = mongoose.model('Shipper', ShippersSchema);
+module.exports = Reciever = mongoose.model('Reciever', RecieversSchema);

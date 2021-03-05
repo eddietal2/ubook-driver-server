@@ -1,4 +1,4 @@
-const Carrier = require('../models/carriers.model');
+const Carrier = require('../../models/carriers.model');
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require('twilio')(accountSid, authToken);
@@ -7,23 +7,44 @@ const nodemailer = require('nodemailer');
 
 exports.register = (req, res) => {
   console.log('Carrier Registering ...');
-  let name = req.body.name;
+  let usertype = req.body.usertype;
+  let firstName = req.body.firstName;
+  let lastName = req.body.lastName;
   let email = req.body.email;
   let phone = req.body.phone;
+  let preferredContactNumber = req.body.preferredContactNumber;
+  let mc = req.body.mc;
+  let ein = req.body.ein;
+  let dot = req.body.dot;
+  let profilePicture = req.body.profilePicture;
+  let driverLicenseNumber = req.body.driverLicenseNumber;
+  let driverLicenseState = req.body.driverLicenseState;
+  let driverLicenseFrontPhoto = req.body.driverLicenseFrontPhoto;
+  let driverLicenseBackPhoto = req.body.driverLicenseBackPhoto;
+  let stripeToken = req.body.stripeToken;
   let password = req.body.password;
 
   Carrier.findOne({ email: email },
     (err, carrier) => {
       if(err) return res.status(400).json(err);
-      if(carrier) return res.status(400).json({msg: 'There is already a Carrier registered with that email'})
       if(!carrier) {
-        console.log('Yooo');
-        
         let carrier = {
-          name: name,
-          email: email,
-          phone: phone,
-          password: password
+          usertype,
+          firstName,
+          lastName,
+          email,
+          phone,
+          preferredContactNumber,
+          mc,
+          ein,
+          dot,
+          profilePicture,
+          driverLicenseNumber,
+          driverLicenseState,
+          driverLicenseFrontPhoto,
+          driverLicenseBackPhoto,
+          stripeToken,
+          password
         }
 
         let newCarrier = Carrier(carrier);
