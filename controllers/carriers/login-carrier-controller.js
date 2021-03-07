@@ -16,19 +16,19 @@ exports.login = (req, res) => {
   let email = req.body.email;
   let usertype = req.body.usertype;
   let password = req.body.password;
-  if (!email || !password || !usertype) {
-      return res.status(400).send({ 'msg': 'You need to send email, usertype and password' });
-  }
 
+  if (!email || !password || !usertype) {
+      return res.status(400).send({ 'msg': 'You need to send email, usertype, and password' });
+  }
   console.log(`Attemping to log in as ${email}`);
 
   Carrier.findOne({ email: email }, (err, carrier) => {
       if (err) {
-          return res.status(400).send({ 'msg': err });
+          return res.status(400).send({ msg: err });
       }
 
       if (!carrier) {
-          return res.status(400).json({ 'msg': 'The Carrier does not exist' });
+          return res.status(400).json({ msg: 'The Carrier does not exist' });
       }
 
       carrier.comparePassword(password, (err, isMatch) => {
@@ -38,7 +38,7 @@ exports.login = (req, res) => {
                   token: createToken(carrier)
               });
           } else {
-              return res.status(400).json({ msg: 'The email and password don\'t match.' });
+              return res.status(400).json({ msg: 'The passwords don\'t match.' });
           }
       });
   });

@@ -4,6 +4,10 @@ const config = require('config');
 const jwt = require('jsonwebtoken');
 
 let CarriersSchema = new mongoose.Schema({
+  usertype: {
+    type: String,
+    maxlength: 20,
+  },
   firstName: {
     type: String,
   },

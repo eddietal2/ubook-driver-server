@@ -17,13 +17,9 @@ exports.login = (req, res) => {
   let usertype = req.body.usertype;
   let password = req.body.password;
 
-  console.log(password);
-  
-
   if (!email || !password || !usertype) {
       return res.status(400).send({ 'msg': 'You need to send email, usertype, and password' });
   }
-
   console.log(`Attemping to log in as ${email}`);
 
   Shipper.findOne({ email: email }, (err, shipper) => {
@@ -36,8 +32,6 @@ exports.login = (req, res) => {
       }
 
       shipper.comparePassword(password, (err, isMatch) => {
-          console.log(password);
-          
           if (isMatch && !err) {
               console.log('Logged in as: ' + shipper.email);
               res.status(200).json({
